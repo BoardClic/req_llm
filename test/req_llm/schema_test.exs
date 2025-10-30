@@ -68,7 +68,7 @@ defmodule ReqLLM.SchemaTest do
       tag_schema = {:map, [title: [type: :string, required: true], id: [type: :integer]]}
 
       schema = [
-        tags: [type: {:list, tag_schema}],
+        tags: [type: {:list, tag_schema}]
       ]
 
       result = Schema.to_json(schema)
