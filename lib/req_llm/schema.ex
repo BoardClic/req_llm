@@ -382,6 +382,32 @@ defmodule ReqLLM.Schema do
         :map ->
           %{"type" => "object"}
 
+        {:map, opts} when is_list(opts) and opts != [] ->
+          required_keys =
+            opts
+            |> Enum.filter(fn {_key, prop_opts} ->
+              Keyword.get(prop_opts, :required, false) == true
+            end)
+            |> Enum.map(fn {key, _} -> to_string(key) end)
+
+          properties =
+            Map.new(opts, fn {prop_name, prop_opts} ->
+              prop_type = Keyword.fetch!(prop_opts, :type)
+              {to_string(prop_name), nimble_type_to_json_schema(prop_type, [])}
+            end)
+
+          map_schema = %{
+            "type" => "object",
+            "properties" => properties,
+            "additionalProperties" => false
+          }
+
+          if required_keys == [] do
+            map_schema
+          else
+            Map.put(map_schema, "required", required_keys)
+          end
+
         {:map, _} ->
           %{"type" => "object"}
 
