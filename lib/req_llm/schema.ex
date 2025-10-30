@@ -68,15 +68,10 @@ defmodule ReqLLM.Schema do
 
   Nested schemas are supported through recursive type handling:
 
+      tag_schema = {:map, [title: [type: :string, required: true], id: [type: :integer]]}
+
       schema = [
-        user: [
-          type: {:list, :map},
-          doc: "List of user objects",
-          properties: [
-            name: [type: :string, required: true],
-            email: [type: :string, required: true]
-          ]
-        ]
+        tags: [type: {:list, tag_schema}],
       ]
 
   """
